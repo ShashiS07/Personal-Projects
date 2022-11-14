@@ -3,21 +3,21 @@ const authoModel= require('../Model/authorModel.js');
 const createAuthor =async function(req,res){
     try{
         let {fname,lname,title,email,password}=req.body;
-        if(!fname) return res.send("FirstnName Is requries");
-        if(!lname) return res.send("LastName is required");
-        if(!title) return res.send("Title is requred");
-        if(!password) return res.send("Password is required")
+        if(!fname,!lname,!title,!email,!password) return res.status(400).send({status:false, error:"All data are Mondatory"});
+        if(!fname) return res.status(400).send({status:false,error:"First Name is required"});
+        if(!lname) return res.status(400).send({status:false,error:"Last Name is required"});
+        if(!title) return res.status(400).send({status:false,error:"title is required"});
+        if(!password) return res.status(400).send({status:false,error:"Password is required"})
         if(!email){ 
-            return res.send("Email is required")
+            return res.status(400).send({status:false,error:"Email is required"})
         }else{
             let emailId=email;
-            let regex="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+            let regex="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+[.com]+$";
             let result=emailId.match(regex);
             if(!result){
-                return res.send("Email is not valid Format")
+                return res.status(400).send({status:false,error:"Email is not valid Format"})
             }
         }
-        if(!fname,!lname,!title,!email,!password) return res.send({msg:"All data are Mondatory"});
         const create =await authoModel.create({fname,lname,title,email,password});
         res.status(201).send({msg:create})
     }
