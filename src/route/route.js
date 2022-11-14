@@ -7,4 +7,7 @@ router.post("/author", AuthorController.createAuthor)
 
 router.post("/blog", BlogController.createblog)
 
+router.post("/getblog", BlogController.getBlogs)
+
+
 module.exports=router
