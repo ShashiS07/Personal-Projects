@@ -39,20 +39,22 @@ let getBlogs = async function (req,res){
         let category = req.query.category
         let tags = req.query.tags
         let subcategory = req.query.subcategory
-        let blogDetails = await blogModel.find({isDeleted:false ,isPublished:false})
-        if (!blogDetails){
-            res.status (404).send({status: false , msg:"No blog exist" } )
-            }else {
-                return res.status(200).send({status :true ,data : blogDetails})
-            }
-        
-        let getDetails = await blogModel.find({$or:[{authorId:authorId},{category :category},{tags:tags},{subcategory:subcategory}]})
-        if (!getDetails){
-            return res.status(400).send({status:false, msg:"Bad reuest" })
+        let query={authorId,category,tags,subcategory}
+        if(query.authorId==undefined&&query.tags==undefined&&query.category==undefined&&query.subcategory==undefined){
+            let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true})
+            if (!blogDetails){
+               return  res.status (404).send({status: false , msg:"No blog exist" } )
+                }else {
+                    return res.status(200).send({status :true ,data : blogDetails})
+                }
         }else{
+            let getDetails = await blogModel.find({$or:[{authorId:authorId},{category :category},{tags:tags},{subcategory:subcategory}]})
+            if (!getDetails){
+            return res.status(400).send({status:false, msg:"Bad reuest" })
+            }else{
             return res.status(200).send({statue:true , data : getDetails})
+            }   
         }
-       
     }
     catch(error) {
         res.status(500).send({msg : "error"})
