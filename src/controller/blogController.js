@@ -8,7 +8,7 @@ const createblog=async function(req,res){
     let data=req.body
     let authorId=data.authorId
     if(!authorId) return res.status(400).send({error:"authorId must be present"})
-    if(!mongoose.Types.ObjectId.isValid(authorId)) res.status(400).send({status:false})
+    if(!mongoose.Types.ObjectId.isValid(authorId)) return res.status(400).send({status:false,error:"authorId is not Valid"})
 
     if(!data.body){return res.status(400).send({status:false,error:"please provide body"})}
 
@@ -16,7 +16,7 @@ const createblog=async function(req,res){
 
     if(data.category=="" || data.category ==[]){return res.status(400).send({status:false,error:"please provide category"})}
     let findId = await AuthorModel.findById(authorId)
-    if (!findId) return res.status(404).send({ status: false, error: "this authorId not exist" })
+    if (!findId) return  res.status(404).send({ status: false, error: "this authorId not exist" })
     let blog= await blogModel.create(data)
     if(data.isPublished==true){
      blog.publishedAt=moment().format()
@@ -24,7 +24,7 @@ const createblog=async function(req,res){
     if(data.isDeleted==true){
         blog.deletedAt=moment().format()
     }
-    res.status(201).send({status:true,blog:blog})  
+    return res.status(201).send({status:true,blog:blog})  
 }
 catch(error){
     res.status(500).send({status:false,error:error.message})
@@ -35,12 +35,9 @@ catch(error){
 
 let getBlogs = async function (req,res){
     try{
-        let authorId = req.query.authorId
-        let category = req.query.category
-        let tags = req.query.tags
-        let subcategory = req.query.subcategory
-        let query={authorId,category,tags,subcategory}
-        if(query.authorId==undefined&&query.tags==undefined&&query.category==undefined&&query.subcategory==undefined){
+        let {authorId,category,tags,subcategory} = req.query
+       console.log(authorId,category,tags,subcategory)
+        if(authorId==undefined&&tags==undefined&&category==undefined&&subcategory==undefined){
             let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true})
             if (!blogDetails){
                return  res.status (404).send({status: false , msg:"No blog exist" } )
