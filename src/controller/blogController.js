@@ -112,21 +112,26 @@ const updateBlogs = async function (req ,res){
 };
 
 // =============================delete by param=================================
-
-const deleteBlog = async function(req,res){
-    let blogId = req.params.blogId
-    if(!blogId) return res.status(400).send({error:"blogId must be present"})
-    if(!isValid(blogId)) res.status(400).send({status:false})
-
-    let blog = await blogModel.findById(blogId);
-  
-    if (!blog) {
-      return res.status(404).send("No such blog exists");
+const deletedBlog = async function (req, res) {
+    try {
+        let blogId = req.params.blogId
+        if(!blogId) return res.status(400).send({error:"blogId must be present"})
+        if(!isValid(blogId)) res.status(400).send({status:false})
+    
+        let blog = await blogModel.findById(blogId);
+      
+        if (!blog) {
+          return res.status(404).send("No such blog exists");
+        }
+        let blogData = req.body
+        let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}}, blogData);
+        res.status(200).send({ status: "deleted", data: deletedBlog });
+      }
+    catch (err) 
+    {
+        res.status(500).send({status:false, msg: err })
     }
-    let blogData = req.body
-    let deletedBlog = await blogModel.findOneAndDelete({ _id: blogId }, blogData);
-    res.status(200).send({ status: "deleted", data: deletedBlog });
-  };
+}
 
 // ============================delete by query=====================================
 
@@ -155,5 +160,5 @@ catch(error){
 module.exports.createblog=createblog
 module.exports.getBlogs=getBlogs
 module.exports.deletebyquery=deletebyquery
-module.exports.deleteBlog=deleteBlog
+module.exports.deletedBlog=deletedBlog
 module.exports.updateBlogs=updateBlogs
