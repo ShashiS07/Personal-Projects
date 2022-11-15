@@ -19,7 +19,7 @@ const createblog=async function(req,res){
         let Body=data.body;
         let regex="[a-zA-Z0-9_]$"
         let result=Body.match(regex);
-        if(!result) return res.status(400).send({status:false,error:"Body Must be greater Than 5 character"})
+        if(!result) return res.status(400).send({status:false,error:"Please Provide Valid Body"})
     };
 
 
@@ -38,7 +38,7 @@ const createblog=async function(req,res){
         let Category=data.category;
         let regex="[a-zA-Z0-9_]$"
         let result=Category.match(regex);
-        if(!result) return res.status(400).send({status:false,error:" Please type Category"})
+        if(!result) return res.status(400).send({status:false,error:" Please provide Category"})
     };
     
     let findDetails = await AuthorModel.findById(authorId)
@@ -122,7 +122,7 @@ const deletedBlog = async function (req, res) {
           return res.status(404).send({status:false, error:"No such blog exists"});
         }
         if(blog.isDeleted==true){
-            return res.status(404).send({status:true, message:"Already deleted"})
+            return res.status(404).send({status:false, message:"Already deleted"})
         }
 
         let blogData = req.body
@@ -143,12 +143,21 @@ try{
       return res.status(404).send({status:false,error:"Bad request"})
     }
     if(data){
-        let find= await blogModel.find(data)
-        if(find.length==0){
-            res.status(404).send({status:false,error:"Please provide valid data"})
+        let documents= await blogModel.find(data)
+        let undeletedDocuments={}
+        for(let i=0;i<documents.length;i++){
+            if(documents[i].isDeleted==true){
+                undeletedDocuments=documents[i]
+            }
+        }
+        if(Object.keys(undeletedDocuments).length==0){
+            return res.status(200).send({status:true, error:"All documents are allready deleted"})
+        }
+        if(documents.length==0){
+           return res.status(404).send({status:false,error:"Please provide valid data"})
         }else{
-            let deletedata=await blogModel.updateMany(data,{$set:{isDeleted:true,deletedAt:new Date()}})
-            return res.status(200).send({status:true,msg:deletedata})
+            let deletedata=await blogModel.updateMany(undeletedDocuments,{$set:{isDeleted:true,deletedAt:new Date()}})
+            return res.status(200).send({status:true,message:deletedata})
         }
     }
 }
