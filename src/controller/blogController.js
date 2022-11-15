@@ -32,7 +32,7 @@ catch(error){
 }
 }
 
-
+// =========================get blog details=======================================
 
 let getBlogs = async function (req,res){
     try{
@@ -58,5 +58,29 @@ let getBlogs = async function (req,res){
     }
 }
 
+// ============================delete by query=====================================
+
+const deletebyquery=async function(req,res){
+try{
+    let data=req.query
+    if(Object.values(data).length==0){
+      return res.status(404).send({status:false,error:"Bad request"})
+    }
+    if(data){
+        let find= await blogModel.find(data)
+        if(find.length==0){
+            res.status(404).send({status:false,error:"Data is not exist"})
+        }else{
+            let deletedata=await blogModel.updateMany(data,{$set:{isDeleted:true,deletedAt:new Date()}})
+            return res.status(200).send({status:true,msg:deletedata})
+        }
+    }
+}
+catch(error){
+    res.status(500).send({status:false,error:error.message})
+}
+}
+
 module.exports.createblog=createblog
 module.exports.getBlogs=getBlogs
+module.exports.deletebyquery=deletebyquery
