@@ -95,15 +95,14 @@ const updateBlogs = async function (req ,res){
             return res.status(404).send({msg: "data not found"})
         }
         let data = req.body
-        let { title, body, subcategory, tags,isPublished } = data
+        let { title, body, subcategory, tags} = data
         
         const blogUpdate = await blogModel.findOneAndUpdate({ _id: blogId }, {
-            $set: { title, body, isPublished, publishedAt: new Date() },
+            $set: { title, body, isPublished:true, publishedAt: new Date() },
             $push: { tags, subcategory }
         }, {  upsert: true,new: true })
 
         res.status(200).send({ status: true,message:"updated", data: blogUpdate })
-
 
         } catch(error){
             res.status(500).send({status:false, message: "error"})
@@ -127,7 +126,7 @@ const deletedBlog = async function (req, res) {
         let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}}, blogData);
         res.status(200).send({ status: "deleted", data: deletedBlog });
       }
-    catch (err){
+    catch (error){
         res.status(500).send({status:false,error:error.message })
     }
 }
