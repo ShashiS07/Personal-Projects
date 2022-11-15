@@ -146,7 +146,7 @@ try{
         let documents= await blogModel.find(data)
         let undeletedDocuments={}
         for(let i=0;i<documents.length;i++){
-            if(documents[i].isDeleted==true){
+            if(documents[i].isDeleted==false){
                 undeletedDocuments=documents[i]
             }
         }
