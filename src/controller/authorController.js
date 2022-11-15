@@ -9,7 +9,7 @@ const createAuthor =async function(req,res){
             return res.status(400).send({status:false,error:"First Name is required"})
         }else{
             let firstname=fname;
-            let regex="[a-zA-Z_]{2,20}"
+            let regex="[a-zA-Z_]{2,20}$"
             let result=firstname.match(regex);
             if(!result) return res.status(400).send({status:false,error:"firstname is not valid"})
         }
@@ -18,7 +18,7 @@ const createAuthor =async function(req,res){
             return res.status(400).send({status:false,error:"Last Name is required"})
         }else{
             let lastname=lname;
-            let regex="[a-zA-Z_]{2,20}"
+            let regex="[a-zA-Z_]{2,20}$"
             let result=lastname.match(regex);
             if(!result) return res.status(400).send({status:false,error:"Lastname is not valid"})
         };
@@ -27,7 +27,7 @@ const createAuthor =async function(req,res){
              return res.status(400).send({status:false,error:"Password is required"});
             }else{
                 let Password=password;
-                let regex="[a-zA-Z0-9_]{5,20}"
+                let regex="[a-zA-Z0-9_]{5,20}$"
                 let result=Password.match(regex);
                 if(!result) return res.status(400).send({status:false,error:"Password is not valid"})
             };

@@ -17,7 +17,7 @@ const createblog=async function(req,res){
         return res.status(400).send({status:false,error:"please provide body"})
     }else{
         let Body=data.body;
-        let regex="[a-zA-Z0-9_]{5,100}"
+        let regex="[a-zA-Z0-9_]$"
         let result=Body.match(regex);
         if(!result) return res.status(400).send({status:false,error:"Body Must be greater Than 5 character"})
     };
@@ -27,7 +27,7 @@ const createblog=async function(req,res){
         return res.status(400).send({status:false,error:"please provide title"})
     }else{
         let Title=data.title;
-        let regex="[a-zA-Z0-9_]"
+        let regex="[a-zA-Z0-9_]$"
         let result=Title.match(regex);
         if(!result) return res.status(400).send({status:false,error:"Title Must be gr"})
     };
@@ -36,14 +36,13 @@ const createblog=async function(req,res){
         return res.status(400).send({status:false,error:"please provide category"})
     }else{
         let Category=data.category;
-        let regex="[a-zA-Z0-9_' ']"
+        let regex="[a-zA-Z0-9_]$"
         let result=Category.match(regex);
         if(!result) return res.status(400).send({status:false,error:" Please type Category"})
     };
     
-    
-    let findId = await AuthorModel.findById(authorId)
-    if (!findId) return  res.status(404).send({ status: false, error: "this authorId not exist" })
+    let findDetails = await AuthorModel.findById(authorId)
+    if (!findDetails) return  res.status(404).send({ status: false, error: "this author details not exist" })
     let blog= await blogModel.create(data)
     if(data.isPublished==true){
      blog.publishedAt=moment().format()
@@ -87,23 +86,25 @@ let getBlogs = async function (req,res){
 
 const updateBlogs = async function (req ,res){
     try{
-        const blogId = request.params.blogId;
+        const blogId = req.params.blogId;
+        if(!isValid(blogId)){
+            return res.status(400).send({status:false, error: "bad request"})
+        }
         const id = await blogModel.findById(blogId);
-        if (!id){
+        if (id.isDeleted==true){
             return res.status(404).send({msg: "data not found"})
         }
-        let data = await blogModel.findOneAndUpdate({_id : req.params.blogId},
-            {
-                title: req.body.title,
-                body: req.body.body,
-                tags: req.body.tags,
-                subCategory: req.body.subCategory,
-                PublishedAt: new Date(),
-                isPublished: true,
-            },
-              { new: true }                
-            );
-            res.status(200).send({msg: "updated successfully, data:data"});
+        let data = req.body
+        let { title, body, subcategory, tags,isPublished } = data
+        
+        const blogUpdate = await blogModel.findOneAndUpdate({ _id: blogId }, {
+            $set: { title, body, isPublished, publishedAt: new Date() },
+            $push: { tags, subcategory }
+        }, {  upsert: true,new: true })
+
+        res.status(200).send({ status: true,message:"updated", data: blogUpdate })
+
+
         } catch(error){
             res.status(500).send({status:false, message: "error"})
         }
@@ -138,7 +139,7 @@ try{
     if(data){
         let find= await blogModel.find(data)
         if(find.length==0){
-            res.status(404).send({status:false,error:"Data is not exist"})
+            res.status(404).send({status:false,error:"Data not exist"})
         }else{
             let deletedata=await blogModel.updateMany(data,{$set:{isDeleted:true,deletedAt:new Date()}})
             return res.status(200).send({status:true,msg:deletedata})
