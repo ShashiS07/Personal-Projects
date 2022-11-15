@@ -151,7 +151,7 @@ try{
             }
         }
         if(Object.keys(undeletedDocuments).length==0){
-            return res.status(200).send({status:true, error:"All documents are allready deleted"})
+            return res.status(200).send({status:true, message:"All documents are allready deleted"})
         }
         if(documents.length==0){
            return res.status(404).send({status:false,error:"Please provide valid data"})
