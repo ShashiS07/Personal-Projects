@@ -12,7 +12,7 @@ const createAuthor =async function(req,res){
             return res.status(400).send({status:false,error:"Email is required"})
         }else{
             let emailId=email;
-            let regex="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+[.com]+$";
+            let regex="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z0-9+_.-]+$";
             let result=emailId.match(regex);
             if(!result){
                 return res.status(400).send({status:false,error:"Email is not valid Format"})
