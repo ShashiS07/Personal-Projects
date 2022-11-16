@@ -21,12 +21,10 @@ const authentication=async function(req,res,next){
 const authorization= async function(req,res,next){
     try{
        decodedToken=req["decodedToken"]
-       console.log(decodedToken)
         let blogId = req.params.blogId;
         if(!blogId) return res.status(400).send({status:false,error:"Blog Id must be present"})
         if(!isValid(blogId)) return res.status(400).send({status:false, error:"Id is not Valid"})
         let authorId1=await blogModel.findById({_id:blogId})
-        console.log(authorId1)
         if((authorId1)==null){
             return res.status(404).send({status:false, error:"Not Found"})
         }
@@ -40,5 +38,26 @@ const authorization= async function(req,res,next){
     res.status(500).send({status:false,error:error.message})
     }
 }
+
+
+const authorizationforquery=async function(req,res,next){
+    try{
+        decodedToken=req["decodedToken"]
+        let data=req.query 
+        if(Object.values(data).length==0){
+            return res.status(404).send({status:false,error:"Bad request"})
+        }
+        if(data){
+            let details= await blogModel.findOne(data)
+            console.log(details)
+        }
+
+
+    }
+    catch(error){
+        return res.status(500).send({status:false, error:error.message})
+    }
+}
 module.exports.authentication=authentication
 module.exports.authorization=authorization
+module.exports.authorizationforquery=authorizationforquery

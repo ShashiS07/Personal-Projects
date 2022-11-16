@@ -88,11 +88,11 @@ const updateBlogs = async function (req ,res){
     try{
         const blogId = req.params.blogId;
         if(!isValid(blogId)){
-            return res.status(400).send({status:false, error: "bad request"})
+            return res.status(400).send({status:false, error: "Bad Request"})
         }
         const id = await blogModel.findById(blogId);
         if (id.isDeleted==true){
-            return res.status(404).send({status:false, error: "data not found"})
+            return res.status(404).send({status:false, error: "Document is deleted"})
         }
         let data = req.body
         let { title, body, subcategory, tags} = data
