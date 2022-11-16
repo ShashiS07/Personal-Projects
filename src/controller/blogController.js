@@ -17,28 +17,27 @@ const createblog=async function(req,res){
         return res.status(400).send({status:false,error:"please provide body"})
     }else{
         let Body=data.body;
-        let regex="[a-zA-Z0-9_]$"
-        let result=Body.match(regex);
-        if(!result) return res.status(400).send({status:false,error:"Please Provide Valid Body"})
+        // let regex="[a-zA-Z0-9_]$"
+        // let result=Body.match(regex);
+        if(!/([a-zA-Z0-9_]$)/.test(Body)) return res.status(400).send({status:false,error:"Please Provide Valid Body"})
     };
-
 
     if(!data.title){
         return res.status(400).send({status:false,error:"please provide title"})
     }else{
         let Title=data.title;
-        let regex="[a-zA-Z0-9_]$"
-        let result=Title.match(regex);
-        if(!result) return res.status(400).send({status:false,error:"Title Must be gr"})
+        // let regex="[a-zA-Z0-9_]$"
+        // let result=Title.match(regex);
+        if(!/([a-zA-Z0-9_]$)/.test(Title)) return res.status(400).send({status:false,error:"Title Must be given"})
     };
 
     if(!data.category){
         return res.status(400).send({status:false,error:"please provide category"})
     }else{
         let Category=data.category;
-        let regex="[a-zA-Z0-9_]$"
-        let result=Category.match(regex);
-        if(!result) return res.status(400).send({status:false,error:" Please provide Category"})
+        // let regex="[a-zA-Z0-9_]$"
+        // let result=Category.match(regex);
+        if(!/([a-zA-Z0-9_]$)/.test(Category)) return res.status(400).send({status:false,error:" Please provide Category"})
     };
     
     let findDetails = await AuthorModel.findById(authorId)

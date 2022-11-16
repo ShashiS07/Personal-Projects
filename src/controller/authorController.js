@@ -9,41 +9,45 @@ const createAuthor =async function(req,res){
         if(!fname){
             return res.status(400).send({status:false,error:"First Name is required"})
         }else{
-            let firstname=fname;
-            let regex="[a-zA-Z_]{2,20}$"
-            let result=firstname.match(regex);
-            if(!result) return res.status(400).send({status:false,error:"firstname is not valid"})
+            // let firstname=fname;
+            // let regex="[a-zA-Z_]{2,20}$"
+            // let result=firstname.match(regex);
+            if(!(/^([a-zA-Z_]+\s)*[a-zA-Z_]{2,30}$/).test(fname)) return res.status(400).send({status:false,error:"This firstname contains certain characters that aren't allowed"})
         }
 
         if(!lname) {
             return res.status(400).send({status:false,error:"Last Name is required"})
         }else{
-            let lastname=lname;
-            let regex="[a-zA-Z_]{2,20}$"
-            let result=lastname.match(regex);
-            if(!result) return res.status(400).send({status:false,error:"Lastname is not valid"})
+            // let lastname=lname;
+            // let regex="[a-zA-Z_]{2,20}$"
+            // let result=lastname.match(regex);
+            if(!(/^([a-zA-Z_]+\s)*[a-zA-Z_]{2,30}$/).test(lname)) return res.status(400).send({status:false,error:"This lastname contains certain characters that aren't allowed"})
         };
-        if(!title) return res.status(400).send({status:false,error:"title is required"});
+        if(!title) return res.status(400).send({status:false, error:"title is required"});
         if(!password){
              return res.status(400).send({status:false,error:"Password is required"});
             }else{
-                let Password=password;
-                let regex="[a-zA-Z0-9_]{5,20}$"
-                let result=Password.match(regex);
-                if(!result) return res.status(400).send({status:false,error:"Password is not valid"})
-            };
+                // let Password=password;
+                // let regex="[a-zA-Z0-9_]{5,20}$"
+                // let result=Password.match(regex);
+                let regex=/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/
+                if(!regex.test(password)) return res.status(400).send({status:false,error:"Your password must be at least 8 characters long, contain at least one number and symbol and have a mixture of uppercase and lowercase letters."})
+            }
         if(!email){ 
             return res.status(400).send({status:false,error:"Email is required"})
         }else{
-            let emailId=email;
-            let regex="^[a-zA-Z0-9+.-]+@[a-zA-Z0-9.-]+.[a-zA-Z0-9+.-]+$";
-            let result=emailId.match(regex);
-            if(!result){
-                return res.status(400).send({status:false,error:"Email is not valid Format"})
+            // let emailId=email;
+            // let regex="^[a-zA-Z0-9+.-]+@[a-zA-Z0-9.-]+.[a-zA-Z0-9+.-]+$";
+            // let result=emailId.match(regex);
+            // if(!result){
+            //     return res.status(400).send({status:false,error:"Email is not valid Format"})
+            // }
+            if (!(/^\w+([\.]?\w+)@\w+([\.]?\w+)(\.\w{2,3})+$/).test(email)) {
+                return res.status(400).send({status:false, error:"please provide valid email"})
             }
         }
         const create =await authorModel.create({fname,lname,title,email,password});
-        res.status(201).send({msg:create})
+        res.status(201).send({status:false, author:create})
     }
     catch (err) {
         res.status(500).send({ msg: "Error", error: err.message })
