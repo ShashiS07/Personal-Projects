@@ -1,4 +1,5 @@
-const authoModel= require('../Model/authorModel.js');
+const authorModel= require('../Model/authorModel.js');
+const jwt=require('jsonwebtoken')
 
 const createAuthor =async function(req,res){
     try{
@@ -41,7 +42,7 @@ const createAuthor =async function(req,res){
                 return res.status(400).send({status:false,error:"Email is not valid Format"})
             }
         }
-        const create =await authoModel.create({fname,lname,title,email,password});
+        const create =await authorModel.create({fname,lname,title,email,password});
         res.status(201).send({msg:create})
     }
     catch (err) {
@@ -50,4 +51,26 @@ const createAuthor =async function(req,res){
 
 }
 
-module.exports={createAuthor}
+// ============================login========================================
+
+const login = async function (req ,res){
+    try{
+        let {email,password} = req.body
+        let author = await authorModel.findOne({email,password});
+        if (!author)
+          return res.send({
+            status: false,
+            msg: "username or the password is not corerct",
+          });
+    
+          let token = jwt.sign({authodId: author._id.toString(),organisation: "LithiumGroup-18",},"grp-18-first-project");
+          res.setHeader("x-api-key", token);
+          res.send({ status: true, data: token });
+}
+catch(error){
+    return res.status(500).send({status:false, error:error.message})
+}
+};
+
+
+module.exports={createAuthor,login}

@@ -2,18 +2,21 @@ const express=require("express")
 const router=express.Router()
 const AuthorController=require('../controller/authorController')
 const BlogController=require('../controller/blogController')
+const Authentication=require('../Middleware/authentication')
 
 router.post("/authors", AuthorController.createAuthor)
 
-router.post("/blogs", BlogController.createblog)
+router.post("/login", AuthorController.login)
 
-router.get("/blogs", BlogController.getBlogs)
+router.post("/blogs",Authentication.authentication, BlogController.createblog)
 
-router.put("/blogs/:blogId", BlogController.updateBlogs)
+router.get("/blogs", Authentication.authentication, BlogController.getBlogs)
 
-router.delete("/blogs/:blogId", BlogController.deletedBlog)
+router.put("/blogs/:blogId/:blogId",Authentication.authorization ,Authentication.authentication, BlogController.updateBlogs)
 
-router.delete("/blogs",BlogController.deletebyquery)
+router.delete("/blogs/:blogId",Authentication.authentication, BlogController.deletedBlog)
+
+router.delete("/blogs",Authentication.authentication,BlogController.deletebyquery)
 
 
 

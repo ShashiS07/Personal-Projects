@@ -121,14 +121,13 @@ const deletedBlog = async function (req, res) {
         if (!blog) {
           return res.status(404).send({status:false, error:"No such blog exists"});
         }
-        if(blog.isDeleted==true){
+        if(blog.isDeleted){
             return res.status(404).send({status:false, message:"Already deleted"})
         }
 
         let blogData = req.body
         let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}}, blogData);
         res.status(200).send()
-        // .send({ status: "deleted", data: deletedBlog });
       }
     catch (error){
         res.status(500).send({status:false,error:error.message })
