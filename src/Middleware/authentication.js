@@ -1,5 +1,7 @@
 const jwt=require('jsonwebtoken')
 const blogModel=require('../Model/blogModel')
+let mongoose= require('mongoose')
+const isValid=mongoose.Types.ObjectId.isValid
 
 const authentication=async function(req,res,next){
     try{
@@ -16,19 +18,26 @@ const authentication=async function(req,res,next){
     }
 }
 
-const authorization = function(req,res,next){
+const authorization= async function(req,res,next){
     try{
-    let authorId = req.params.authorId  //header empty/filled check nhi  bcuz uper check hoke aa rha h
-
-    let token = req.headers["x-api-key"]       //ek owner ka ek token , jiske ander uski id etc (token me payload, payload me id, password)
-    let decode = jwt.verify(token, "grp-18-first-project")   //to token me present payload and secrate ki help se wapis token to bnayega , and check karega ki dono token same bn rhe h ki nhi, then
-    let authorLogin = decode.authorId    //token me se ,is token ke owner ki id hogi, usko nikale
-
-    if(authorId != authorLogin) return res.status(400).send({status:"false",msg: "unauthorized user" })            //authorId (already loggined user) means abhi jo access krna chah rha h, and 1st time login me jo banda tha dono same h ki nhi , if same h to put delete krne do warna error
-    next()
+       decodedToken=req["decodedToken"]
+       console.log(decodedToken)
+        let blogId = req.params.blogId;
+        if(!blogId) return res.status(400).send({status:false,error:"Blog Id must be present"})
+        if(!isValid(blogId)) return res.status(400).send({status:false, error:"Id is not Valid"})
+        let authorId1=await blogModel.findById({_id:blogId})
+        console.log(authorId1)
+        if((authorId1)==null){
+            return res.status(404).send({status:false, error:"Not Found"})
+        }
+        let authorId=authorId1.authorId.toString()
+      
+        let userloggedin=decodedToken.authorId
+        if(authorId!==userloggedin) return res.status(403).send({status:false,error:"User not authorised"})  
+        next()
     }
-    catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
+    catch (error) {
+    res.status(500).send({status:false,error:error.message})
     }
 }
 module.exports.authentication=authentication

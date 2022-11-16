@@ -63,7 +63,7 @@ const login = async function (req ,res){
             msg: "username or the password is not corerct",
           });
     
-          let token = jwt.sign({authodId: author._id.toString(),organisation: "LithiumGroup-18",},"grp-18-first-project");
+          let token = jwt.sign({authorId: author._id.toString(),organisation: "LithiumGroup-18",},"grp-18-first-project");
           res.setHeader("x-api-key", token);
           res.send({ status: true, data: token });
 }

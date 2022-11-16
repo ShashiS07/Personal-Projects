@@ -92,7 +92,7 @@ const updateBlogs = async function (req ,res){
         }
         const id = await blogModel.findById(blogId);
         if (id.isDeleted==true){
-            return res.status(404).send({msg: "data not found"})
+            return res.status(404).send({status:false, error: "data not found"})
         }
         let data = req.body
         let { title, body, subcategory, tags} = data
@@ -105,7 +105,7 @@ const updateBlogs = async function (req ,res){
         res.status(200).send({ status: true,message:"updated", data: blogUpdate })
 
         } catch(error){
-            res.status(500).send({status:false, message: "error"})
+            res.status(500).send({status:false, error:error.message})
         }
     
 };
