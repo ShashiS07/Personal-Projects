@@ -24,11 +24,11 @@ const authorization= async function(req,res,next){
         let blogId = req.params.blogId;
         if(!blogId) return res.status(400).send({status:false,error:"Blog Id must be present"})
         if(!isValid(blogId)) return res.status(400).send({status:false, error:"Id is not Valid"})
-        let authorId1=await blogModel.findById({_id:blogId})
-        if((authorId1)==null){
+        let blogDetails=await blogModel.findById({_id:blogId})
+        if(!blogDetails){
             return res.status(404).send({status:false, error:"Not Found"})
         }
-        let authorId=authorId1.authorId.toString()
+        let authorId=blogDetails.authorId.toString()
       
         let userloggedin=decodedToken.authorId
         if(authorId!==userloggedin) return res.status(403).send({status:false,error:"User not authorised"})  
@@ -48,11 +48,12 @@ const authorizationforquery=async function(req,res,next){
             return res.status(404).send({status:false,error:"Bad request"})
         }
         if(data){
-            let details= await blogModel.findOne(data)
-            console.log(details)
-        }
-
-
+        let details= await blogModel.findOne(data)
+        let authorId=details.authorId.toString()
+        let userloggedin=decodedToken.authorId
+        if(authorId!==userloggedin) return res.status(403).send({status:false,error:"User not authorised"})  
+        next()
+    }
     }
     catch(error){
         return res.status(500).send({status:false, error:error.message})
