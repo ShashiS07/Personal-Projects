@@ -127,7 +127,8 @@ const deletedBlog = async function (req, res) {
 
         let blogData = req.body
         let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}}, blogData);
-        res.status(200).send({ status: "deleted", data: deletedBlog });
+        res.status(200).send()
+        // .send({ status: "deleted", data: deletedBlog });
       }
     catch (error){
         res.status(500).send({status:false,error:error.message })
@@ -144,20 +145,11 @@ try{
     }
     if(data){
         let documents= await blogModel.find(data)
-        let undeletedDocuments={}
-        for(let i=0;i<documents.length;i++){
-            if(documents[i].isDeleted==false){
-                undeletedDocuments=documents[i]
-            }
-        }
-        if(Object.keys(undeletedDocuments).length==0){
-            return res.status(200).send({status:true, message:"All documents are allready deleted"})
-        }
         if(documents.length==0){
            return res.status(404).send({status:false,error:"Please provide valid data"})
         }else{
-            let deletedata=await blogModel.updateMany(undeletedDocuments,{$set:{isDeleted:true,deletedAt:new Date()}})
-            return res.status(200).send({status:true,message:deletedata})
+            let deletedata=await blogModel.updateMany(data,{$set:{isDeleted:true,deletedAt:new Date()}})
+            return res.status(200).send()
         }
     }
 }
