@@ -49,6 +49,9 @@ const authorizationforquery=async function(req,res,next){
         }
         if(data){
         let details= await blogModel.findOne(data)
+        if(!details){
+            return res.status(404).send({status:false, error:"Not Found"})
+        }
         let authorId=details.authorId.toString()
         let userloggedin=decodedToken.authorId
         if(authorId!==userloggedin) return res.status(403).send({status:false,error:"User not authorised"})  
