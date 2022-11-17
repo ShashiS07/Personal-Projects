@@ -133,9 +133,9 @@ const deletedBlog = async function (req, res) {
 const deletebyquery=async function(req,res){
 try{
     let data=req.query
-    if(Object.values(data).length==0){
-      return res.status(404).send({status:false,error:"Bad request"})
-    }
+    // if(Object.values(data).length==0){
+    //   return res.status(404).send({status:false,error:"Bad request"})
+    // }
     if(data){
         let documents= await blogModel.find(data)
         if(documents.length==0){

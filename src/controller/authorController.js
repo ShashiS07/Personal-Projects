@@ -45,6 +45,12 @@ const createAuthor =async function(req,res){
 const login = async function (req ,res){
     try{
         let {email,password} = req.body
+        if(!email){
+            return res.status(400).send({status:false, error:"please provide email"})
+        }
+        if(!password){
+            return res.status(400).send({status:false, error:"please provide password"})
+        }
         let author = await authorModel.findOne({email,password});
         if (!author) return res.status(400).send({status: false, error: "username or the password is not correct"});
 
