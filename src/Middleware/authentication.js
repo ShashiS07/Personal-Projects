@@ -7,14 +7,16 @@ const authentication=async function(req,res,next){
     try{
         let token=req.headers["x-api-key"]
         if(!token) return res.status(404).send({status:false,error:"Token must be present"})
-
-        let decodedToken=jwt.verify(token,"grp-18-first-project")
-        if(!decodedToken) return res.status(401).send({status:false,error:"Token is invalid"})
+        try{
+        var decodedToken=jwt.verify(token,"grp-18-first-project")
+        }catch(err){
+         return res.status(401).send({status:false,error:"Token is invalid"})
+        }
         req["decodedToken"]=decodedToken
         next()
     }
     catch(error){
-        res.status(500).send({status:false,error:error.message})
+        return res.status(500).send({status:false, error:error.message})
     }
 }
 
@@ -39,6 +41,7 @@ const authorization= async function(req,res,next){
     }
 }
 
+// ========================authorization for delete by query===========================
 
 const authorizationforquery=async function(req,res,next){
     try{

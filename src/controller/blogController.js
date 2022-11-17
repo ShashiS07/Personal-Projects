@@ -37,10 +37,10 @@ const createblog=async function(req,res){
     let findDetails = await AuthorModel.findById(authorId)
     if (!findDetails) return  res.status(404).send({ status: false, error: "this author details not exist" })
     let blog= await blogModel.create(data)
-    if(data.isPublished==true){
+    if(data.isPublished){
      blog.publishedAt=moment().format()
     }
-    if(data.isDeleted==true){
+    if(data.isDeleted){
         blog.deletedAt=moment().format()
     }
     return res.status(201).send({status:true,blog:blog})  
@@ -58,7 +58,7 @@ let getBlogs = async function (req,res){
         if(authorId==undefined&&tags==undefined&&category==undefined&&subcategory==undefined){
             let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true}).populate('authorId')
             if (!blogDetails){
-               return  res.status (404).send({status: false , msg:"No blog exist" } )
+               return  res.status (404).send({status: false , error:"No blog exist" } )
                 }else {
                     return res.status(200).send({status :true ,data : blogDetails})
                 }
@@ -66,7 +66,7 @@ let getBlogs = async function (req,res){
             let getDetails = await blogModel.find({$or:[{authorId:authorId},{category :category},{tags:tags},{subcategory:subcategory}]}).populate('authorId')
             
             if (getDetails.length==0){
-            return res.status(400).send({status:false, msg:"Bad reuest" })
+            return res.status(400).send({status:false, error:"Bad reuest" })
             }else{
             return res.status(200).send({statue:true , data : getDetails})
             }   

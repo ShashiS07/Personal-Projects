@@ -35,7 +35,7 @@ const createAuthor =async function(req,res){
         res.status(201).send({status:true, author:create})
     }
     catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
+        res.status(500).send({ status:false, error:err.message })
     }
 
 }
@@ -46,20 +46,14 @@ const login = async function (req ,res){
     try{
         let {email,password} = req.body
         let author = await authorModel.findOne({email,password});
-        if (!author)
-          return res.send({
-            status: false,
-            msg: "username or the password is not corerct",
-          });
-    
+        if (!author) return res.status(400).send({status: false, error: "username or the password is not correct"});
+
           let token = jwt.sign({authorId: author._id.toString(),organisation: "LithiumGroup-18",},"grp-18-first-project");
-          res.setHeader("x-api-key", token);
-          res.send({ status: true, data: token });
+          res.status(200).send({ status: true, data: token});
 }
 catch(error){
     return res.status(500).send({status:false, error:error.message})
 }
 };
-
 
 module.exports={createAuthor,login}
