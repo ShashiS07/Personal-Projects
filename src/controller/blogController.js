@@ -17,7 +17,7 @@ const createblog=async function(req,res){
         return res.status(400).send({status:false,error:"please provide body"})
     }else{
         let Body=data.body;
-        if(!/([a-zA-Z0-9_]$)/.test(Body)) return res.status(400).send({status:false,error:"Please Provide Valid Body"})
+        if(!/([a-zA-Z0-9_!.?,-]$)/.test(Body)) return res.status(400).send({status:false,error:"Please Provide Valid Body"})
     };
 
     if(!data.title){
