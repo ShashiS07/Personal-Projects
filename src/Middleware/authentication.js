@@ -41,35 +41,6 @@ const authorization= async function(req,res,next){
     }
 }
 
-// ========================authorization for delete by query===========================
 
-const authorizationforquery=async function(req,res,next){
-    try{
-        decodedToken=req["decodedToken"]
-        let data=req.query
-        console.log(data) 
-        if(Object.values(data).length==0){
-            return res.status(404).send({status:false,error:"Bad request"})
-        }
-        if(data.tags||data.authorId||data.category||data.isPublished||data.subcategory){
-            if(data){
-            let details= await blogModel.findOne(data)
-            if(!details){
-                return res.status(404).send({status:false, error:"Not Found"})
-            }
-            let authorId=details.authorId.toString()
-            let userloggedin=decodedToken.authorId
-            if(authorId!==userloggedin) return res.status(403).send({status:false,error:"User not authorised"})  
-            next()
-        }
-        }else{
-            return res.status(400).send({status:false,error:"Please provide valid query"})
-        }
-    }
-    catch(error){
-        return res.status(500).send({status:false, error:error.message})
-    }
-}
 module.exports.authentication=authentication
 module.exports.authorization=authorization
-module.exports.authorizationforquery=authorizationforquery

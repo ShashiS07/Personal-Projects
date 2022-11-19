@@ -9,6 +9,9 @@ const isValid=mongoose.Types.ObjectId.isValid
 const createblog=async function(req,res){
     try{
     let data=req.body
+        if(Object.values(data).length==0){
+            return res.status(400).send({status:false, error:"Please Provide Data to Update"})
+        }
     let authorId=data.authorId
     if(!authorId) return res.status(400).send({error:"authorId must be present"})
     if(!isValid(authorId)) return res.status(400).send({status:false,error:"authorId is not Valid"})
@@ -63,7 +66,21 @@ let getBlogs = async function (req,res){
                     return res.status(200).send({status :true ,data : blogDetails})
                 }
         }else{
-            let getDetails = await blogModel.find({$or:[{authorId:authorId},{category :category},{tags:tags},{subcategory:subcategory}]}).populate('authorId')
+            let filterdata={isDeleted:false, authorId:req.authorId}
+            let {category,subcategory,tags,isPublished,authorId}=req.query
+
+        if(authorId){
+            if(!isValid(authorId)){
+            return res.status(400).send({status:false, error:"Please provide valid id"})
+         }else
+            filterdata.authorId=authorId
+        }
+            if(category)  filterdata.category=category
+            if(subcategory) filterdata.subcategory=subcategory
+            if(tags) filterdata.tags=tags
+            if(isPublished) filterdata.isPublished=isPublished
+   
+            let getDetails = await blogModel.find(filterdata).populate('authorId')
             
             if (getDetails.length==0){
             return res.status(400).send({status:false, error:"Bad reuest" })
@@ -89,6 +106,9 @@ const updateBlogs = async function (req ,res){
             return res.status(404).send({status:false, error: "Document is deleted"})
         }
         let data = req.body
+        if(Object.values(data).length==0){
+            return res.status(400).send({status:false, error:"Please Provide Data to Update"})
+        }
         let { title, body, subcategory, tags} = data
         
         const blogUpdate = await blogModel.findOneAndUpdate({ _id: blogId }, {
@@ -119,8 +139,7 @@ const deletedBlog = async function (req, res) {
             return res.status(404).send({status:false, message:"Already deleted"})
         }
 
-        let blogData = req.body
-        let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}}, blogData);
+        let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}});
         res.status(200).send()
       }
     catch (error){
@@ -132,19 +151,46 @@ const deletedBlog = async function (req, res) {
 
 const deletebyquery=async function(req,res){
 try{
-    let data=req.query
-    // if(Object.values(data).length==0){
-    //   return res.status(404).send({status:false,error:"Bad request"})
-    // }
-    if(data){
-        let documents= await blogModel.find(data)
-        if(documents.length==0){
-           return res.status(404).send({status:false,error:"Please provide valid data"})
-        }else{
-            let deletedata=await blogModel.updateMany(data,{$set:{isDeleted:true,deletedAt:new Date()}})
-            return res.status(200).send()
-        }
-    }
+   let filterdata={isDeleted:false, authorId:req.authorId}
+   let {category,subcategory,tags,isPublished,authorId}=req.query
+
+   if(authorId){
+    if(!isValid(authorId)){
+        return res.status(400).send({status:false, error:"Please provide valid id"})
+    }else
+    filterdata.authorId=authorId
+   }
+   if(category){
+    filterdata.category=category
+   }
+   if(subcategory){
+    filterdata.subcategory=subcategory
+   }
+   if(tags){
+    filterdata.tags=tags
+   }
+   if(isPublished){
+    filterdata.isPublished=isPublished
+   }
+   let data=await blogModel.findOne(filterdata)
+
+   if(!data){
+     return res.status(404).send({status:false, error:"Id is not valid"})
+   }
+
+   if(!data){
+    return res.status(404).send({status:false, error:"data is not found"})
+  }
+
+  if(data.isDeleted == true){
+    return res.status(400).send({status: false, message: "Already Deleted" })
+  }
+
+  if(data.authorId._id.toString() !== req["decodedToken"].authorId.toString()){
+    return res.status(401).send({status:false,error : "not authorised"})
+  }
+  let updatedData = await blogModel.updateOne(filterdata, {isDeleted : true},{new:true})
+  return res.status(200).send({status:true, message : " messege is deleted" })
 }
 catch(error){
     res.status(500).send({status:false,error:error.message})
