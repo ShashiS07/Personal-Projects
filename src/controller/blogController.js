@@ -10,7 +10,7 @@ const createblog=async function(req,res){
     try{
     let data=req.body
         if(Object.values(data).length==0){
-            return res.status(400).send({status:false, error:"Please Provide Data to Update"})
+            return res.status(400).send({status:false, error:"Please Provide Data"})
         }
     let authorId=data.authorId
     if(!authorId) return res.status(400).send({error:"authorId must be present"})
@@ -173,10 +173,6 @@ try{
     filterdata.isPublished=isPublished
    }
    let data=await blogModel.findOne(filterdata)
-
-   if(!data){
-     return res.status(404).send({status:false, error:"Id is not valid"})
-   }
 
    if(!data){
     return res.status(404).send({status:false, error:"data is not found"})
