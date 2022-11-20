@@ -18,8 +18,10 @@ const createAuthor =async function(req,res){
             if(!(/^([a-zA-Z_]+\s)*[a-zA-Z_]{2,30}$/).test(lname)) return res.status(400).send({status:false,error:"This lastname contains certain characters that aren't allowed"})
         };
         if(!title) return res.status(400).send({status:false, error:"title is required"});
-        if(title!==Mr||title!==Mrs||title!==Miss){
-          return res.status(400).send({status:false,error:"Please Provide valid title(Mr/Mrs/Miss)"})
+        title=title.trim()
+        if(title){
+            if(!(["Mr","Mrs","Miss"].includes(title)))
+        return res.status(400).send({status:false,error:"Please Provide valid title(Mr/Mrs/Miss)"})
         }
         if(!password){
              return res.status(400).send({status:false,error:"Password is required"});

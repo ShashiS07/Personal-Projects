@@ -35,8 +35,8 @@ const createblog=async function(req,res){
     }else{
         let Category=data.category;
         if(!/([a-zA-Z0-9_]$)/.test(Category)) return res.status(400).send({status:false,error:" Please provide Category"})
-    };
-    
+    }
+
     let findDetails = await AuthorModel.findById(authorId)
     if (!findDetails) return  res.status(404).send({ status: false, error: "this author details not exist" })
     let blog= await blogModel.create(data)
@@ -136,11 +136,11 @@ const deletedBlog = async function (req, res) {
           return res.status(404).send({status:false, error:"No such blog exists"});
         }
         if(blog.isDeleted){
-            return res.status(404).send({status:false, message:"Already deleted"})
+            return res.status(200).send({status:false, message:"Already deleted"})
         }
 
         let deletedBlog = await blogModel.updateOne({ _id: blogId },{$set:{isDeleted:true,deletedAt:new Date()}});
-        res.status(200).send()
+        res.status(200).send({status:true,message:"Data deleted"})
       }
     catch (error){
         res.status(500).send({status:false,error:error.message })
@@ -190,7 +190,7 @@ try{
     return res.status(401).send({status:false,error : "not authorised"})
   }
   let updatedData = await blogModel.updateOne(filterdata, {isDeleted : true},{new:true})
-  return res.status(200).send({status:true, message : " messege is deleted" })
+  return res.status(200).send({status:true, message : " data is deleted" })
 }
 catch(error){
     res.status(500).send({status:false,error:error.message})
