@@ -58,7 +58,6 @@ const getbooks= async function(req,res){
 
 // ===============================get book by Id========================================
 
-<<<<<<< HEAD
 const getbooksbyId= async function(req,res){
 try{
     let bookId=req.params.bookId
@@ -89,7 +88,6 @@ try{
 }
 
 module.exports={getbooks , createBook,getbooksbyId}
-=======
 const updateBookById = async (req, res) => {
     try {
         let bookId = req.params.bookId;
@@ -138,4 +136,3 @@ const updateBookById = async (req, res) => {
 
 
 module.exports={getbooks , createBook,updateBookById}
->>>>>>> c3d5dd42c5b8315f6615392b7a3c5cf469cbe3d7
