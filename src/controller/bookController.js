@@ -1,7 +1,9 @@
 const bookModel=require('../model/bookModel')
+const userModel = require('../model/userModel')
 const reviewModel= require('../model/reviewModel')
 const { checkInputsPresent, checkString, validateName, validateTName, validateISBN, validateDate } = require('../Validator/validator')
-const validator=require("../validator/validator")
+
+const ObjectId = require('mongoose').Types.ObjectId
 const{isValidObjectId}=require("mongoose")
 
 
@@ -96,7 +98,7 @@ const getbooks= async function(req,res){
 const getbooksbyId= async function(req,res){
 try{
     let bookId=req.params.bookId
-    if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
+    if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid bookId"})
     
     const findId=await bookModel.findById({_id:bookId})
     if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
