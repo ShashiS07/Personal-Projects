@@ -1,4 +1,5 @@
 const bookModel=require('../model/bookModel')
+const reviewModel= require('../model/reviewModel')
 
 // ==============================create books===========================================
 
@@ -51,6 +52,35 @@ const getbooks= async function(req,res){
     }
     }
 
+// ===============================get book by Id========================================
 
+const getbooksbyId= async function(req,res){
+try{
+    let bookId=req.params.bookId
+    
+    const findId=await bookModel.findById({_id:bookId, isDeleted:false})
+    if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
+  
+    const review= await reviewModel.find(findId)
+    
+    const details={
+        _id:findId._id,
+        title:findId.title,
+        excerpt:findId.excerpt,
+        userId:findId.userId,
+        category:findId.category,
+        subCategory:findId.subCategory,
+        isDeleted:findId.isDeleted,
+        releasedAt:findId.releasedAt,
+        createdAt:findId.createdAt,
+        updatedAt:findId.updatedAt,
+        reviewData:review
+    }
 
-module.exports={getbooks , createBook}
+    return res.status(200).send({status:true,message:"book List", data: details})
+}catch(error){
+    return res.status(500).send({status:false,message:error.message})
+}
+}
+
+module.exports={getbooks , createBook,getbooksbyId}
