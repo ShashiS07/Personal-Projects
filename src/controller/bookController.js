@@ -1,6 +1,9 @@
 const bookModel=require('../model/bookModel')
 const reviewModel= require('../model/reviewModel')
 const { checkInputsPresent, checkString, validateName, validateTName, validateISBN, validateDate } = require('../Validator/validator')
+const validator=require("../validator/validator")
+const{isValidObjectId}=require("mongoose")
+
 
 // ==============================create books===========================================
 
@@ -53,8 +56,9 @@ const getbooks= async function(req,res){
     }
     }
 
-// ===============================get book by Id========================================
-
+    
+//==================================get book by Id============================================= 
+    
 const getbooksbyId= async function(req,res){
 try{
     let bookId=req.params.bookId
@@ -84,7 +88,7 @@ try{
 }
 }
 
-// ===================update=====================================================
+// =============================update=====================================================
 
 const updateBookById = async (req, res) => {
     try {
@@ -132,4 +136,32 @@ const updateBookById = async (req, res) => {
     }
 }
 
-module.exports={getbooks , createBook,getbooksbyId,updateBookById}
+// // ===============================delete book===============================================
+    
+let deleteBook = async function (req, res) {
+    try {
+        const bookId = req.params.bookId
+        
+        if (!validator.checkString((bookId) && isValidObjectId(bookId))) {
+            return res.status(400).send({ status: false, msg: "bookId is not valid" })
+        }
+        const book = await bookModel.findOne({ _id: bookId })
+        if (!book) {
+            res.status(404).send({ status: false, message: `id don't exist in book collection` })
+            return
+        }
+      
+       let deletedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false, deletedAt: null },
+            { isDeleted: true, deletedAt: new Date() }, { new: true })
+        if (!deletedBook) {
+            res.status(404).send({ status: false, msg: "either the book is already deleted or you are not valid user to access this book" })
+            return
+        }
+        res.status(200).send({ status: true, msg: "Book has been deleted" ,data:deleteBook})
+    } catch (error) {
+        res.status(500).send({ status: false, msg: error.message })
+    }
+};
+
+module.exports={getbooks , createBook,getbooksbyId,updateBookById,deleteBook}
+
