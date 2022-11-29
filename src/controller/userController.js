@@ -43,6 +43,8 @@ const createUser= async function(req,res){
             if(!address.pincode || address.pincode=="") return res.status(400).send({status:false,message:"Please provide pincode"})
         }
         
+
+        
     let obj = await userModel.create(data)
     res.status(201).send({status:true,data:obj})
     }
