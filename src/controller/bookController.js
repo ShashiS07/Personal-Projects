@@ -1,16 +1,13 @@
 const bookModel=require('../model/bookModel')
-<<<<<<< HEAD
 const reviewModel= require('../model/reviewModel')
-
-=======
 const { checkInputsPresent, checkString, validateName, validateTName, validateISBN, validateDate } = require('../Validator/validator')
->>>>>>> c3d5dd42c5b8315f6615392b7a3c5cf469cbe3d7
+
 // ==============================create books===========================================
 
 const createBook = async function(req, res){
     try{
         let reqBody = req.body
-        const {title, excerpt, userId, ISBN, category, subCategory, releasedAt } = reqBody
+        const {title, excerpt, userId, ISBN, category, subcategory, releasedAt } = reqBody
 
         if(!reqBody) return res.status(400).send({status: false , msg: "Book data is required"})
         if(!title) return res.status(400).send({status: false , msg: "Title is required"})
@@ -18,7 +15,7 @@ const createBook = async function(req, res){
         if(!userId) return res.status(400).send({status: false, msg: "User ID is required"})
         if(!ISBN) return res.status(400).send({status: false, msg: "ISBN is required"})
         if(!category) return res.status(400).send({status: false, msg: "category is required"})
-        if(!subCategory) return res.status(400).send({status: false, msg: "Sub category is required"})
+        if(!subcategory) return res.status(400).send({status: false, msg: "Sub category is required"})
         if(!releasedAt) return res.status(400).send({status: false, msg: "Book release date is required"})
 
         const bookData = await bookModel.create(reqBody)
@@ -73,7 +70,7 @@ try{
         excerpt:findId.excerpt,
         userId:findId.userId,
         category:findId.category,
-        subCategory:findId.subCategory,
+        subcategory:findId.subcategory,
         isDeleted:findId.isDeleted,
         releasedAt:findId.releasedAt,
         createdAt:findId.createdAt,

@@ -1,7 +1,6 @@
-
 const JWT = require('jsonwebtoken')
-const userModel = require("../Model/userModel")
-const bookModel = require('../Model/bookModel')
+const userModel = require("../model/userModel")
+const bookModel = require('../model/bookModel')
 const ObjectId = require('mongoose').Types.ObjectId
 const { checkInputsPresent, checkString } = require('../Validator/validator')
 

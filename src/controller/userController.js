@@ -70,11 +70,9 @@ const login = async function(req,res){
     let data2 = await userModel.findOne({email:email,password:password})
     if (!data2) { return res.status(401).send({ status: false, message: "Invalid Login Credentials! You need to register first." }) }
 
-    let token = Jwt.sign({ userId: data1['_id']}, "SubodhPal@123", { expiresIn:"1d" })
+    let token = Jwt.sign({ userId: data2['_id']}, "SubodhPal@123", { expiresIn:"1d" })
 
-    let obj = { userId: data1['_id'], token: token }
-
-    res.status(200).send({ status: true, message: "Token Created Sucessfully", data: obj })
+    res.status(200).send({ status: true, message: "Token Created Sucessfully", data: token })
     }
     catch(err)
     {
