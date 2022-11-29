@@ -35,7 +35,7 @@ const createUser= async function(req,res){
         if (!checkString(password)) return res.status(400).send({ status: false, message: "Please Provide Password." })
         if (!validatePassword(password)) return res.status(400).send({ status: false, message: "Invalid Password Format! Password Should be 8 to 15 Characters and have a mixture of uppercase and lowercase letters and contain one symbol and then at least one Number." });
         
-        if(!address) return res.status(400).send({status:false,message:"Please Provide address"})
+        //if(!address) return res.status(400).send({status:false,message:"Please Provide address"})
         if(address){
             if(!Object.keys(address).length) return res.status(400).send({status:false,message:"Please provide Street/city/pincode"})
             if(!address.street || address.street=="") return res.status(400).send({status:false,message:"Please provide Street"})
@@ -50,8 +50,6 @@ const createUser= async function(req,res){
         res.status(500).send({status:false,message:err.message})
     }
 }
-
-
 
 const login = async function(req,res){
     try{
