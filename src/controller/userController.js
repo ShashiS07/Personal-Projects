@@ -11,7 +11,6 @@ const createUser= async function(req,res){
         let { title, name, phone, email, password, address} = data
 
         if (!checkInputsPresent(data)) return res.status(400).send({ status: false, message: "Request Can't Be Empty." });
-        // if (checkInputsPresent(rest)) { return res.status(400).send({ status: false, message: "You can't input anything except title, name, phone, email, password and address." }) }
 
         if (!checkString(title)) return res.status(400).send({ status: false, message: "Please Provide Title." })
         if (!validateTitle(title)) return res.status(400).send({ status: false, message: "Invalid Title! Please input title as 'Mr' or 'Mrs' or 'Miss'." });
@@ -36,37 +35,14 @@ const createUser= async function(req,res){
         if (!checkString(password)) return res.status(400).send({ status: false, message: "Please Provide Password." })
         if (!validatePassword(password)) return res.status(400).send({ status: false, message: "Invalid Password Format! Password Should be 8 to 15 Characters and have a mixture of uppercase and lowercase letters and contain one symbol and then at least one Number." });
         
-//         if(!(address)) return res.status(400).send({ status: false, message: "Please Provide address." })
-
-// if(!(address.street)) return res.status(400).send({ status: false, message: "Please Provide street." })
-
-        if (data.hasOwnProperty('address')) {
-
-            if (typeof address !== "object") return res.status(400).send({ status: false, message: "Address is Invalid type, should be an object" });
-            if (!checkInputsPresent(address)) return res.status(400).send({ status: false, message: "Address must have atleast one field between (street, city, pincode)" });
-
-            let { street, city, pincode, ...rest } = address
-   
-            
-           
-            if (address.hasOwnProperty('street')) {
-                if (!checkString(street)) return res.status(400).send({ status: false, msg: `Invalid street (${street}) address Provided.` });
-            }
-           
-
-            if (address.hasOwnProperty('city')) {
-                if (!validateName(city)) return res.status(400).send({ status: false, msg: `Invalid City (${city}) address Provided.` });
-            }
-            
-            if (address.hasOwnProperty('pincode')) {
-                if (!validatePincode(pincode)) return res.status(400).send({ status: false, msg: `Invalid Pincode (${pincode}) Provided, provide valid Pincode with 6 Digit Numbers.` });
-            }
-            if (checkInputsPresent(rest)) { return res.status(400).send({ status: false, message: "You can't input anything in address except street, city and pincode." }) }
+        if(!address) return res.status(400).send({status:false,message:"Please Provide address"})
+        if(address){
+            if(!Object.keys(address).length) return res.status(400).send({status:false,message:"Please provide Street/city/pincode"})
+            if(!address.street || address.street=="") return res.status(400).send({status:false,message:"Please provide Street"})
+            if(!address.city || address.city=="") return res.status(400).send({status:false,message:"Please provide city"})
+            if(!address.pincode || address.pincode=="") return res.status(400).send({status:false,message:"Please provide pincode"})
         }
-
-
-
-
+        
     let obj = await userModel.create(data)
     res.status(201).send({status:true,data:obj})
     }
