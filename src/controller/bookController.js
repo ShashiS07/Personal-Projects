@@ -87,40 +87,41 @@ try{
 }
 }
 
-module.exports={getbooks , createBook,getbooksbyId}
+// ===================update=====================================================
+
 const updateBookById = async (req, res) => {
     try {
         let bookId = req.params.bookId;
         let body = req.body
         let { title, excerpt, releasedAt, ISBN, ...rest } = body
-
+        
         if (!checkInputsPresent(body)) return res.status(400).send({ status: false, message: "please provide some details(i.e. title, excerpt, releasedAt, ISBN) to update !!!" });
         if (checkInputsPresent(req.query)) { return res.status(400).send({ status: false, message: "You can't put anything in Query" }) }
         if (checkInputsPresent(rest)) { return res.status(400).send({ status: false, message: "You can put only title or excerpt or releasedAt or ISBN." }) }
-
+        
         
         if (body.hasOwnProperty('title') && !checkString(title)) return res.status(400).send({ status: false, message: "Please Provide Title." })
         if (title && !validateTName(title)) return res.status(400).send({ status: false, message: "Invalid Title." });
-
+        
         if (body.hasOwnProperty('excerpt') && !checkString(excerpt)) return res.status(400).send({ status: false, message: "Please Provide Excerpt." })
         if (excerpt && !validateName(excerpt)) return res.status(400).send({ status: false, message: "Invalid Excerpt." });
-
+        
         
         if (body.hasOwnProperty('ISBN') && !checkString(ISBN)) return res.status(400).send({ status: false, message: "Please Provide ISBN." })
         if (ISBN && !validateISBN(ISBN)) return res.status(400).send({ status: false, message: "Invalid ISBN." });
-
+        
         
         if (body.hasOwnProperty('releasedAt') && !validateDate(releasedAt)) return res.status(400).send({ status: false, message: "Invalid Date Format. You should use this format (YYYY-MM-DD)" });
-
+        
    
         let uniqueTitle = await bookModel.findOne({ title: title })
         if (uniqueTitle) { return res.status(404).send({ status: false, message: `This Title: ${title} is already Present. Please use Another Title.` }) }
-
+        
         
         let uniqueISBN = await bookModel.findOne({ ISBN: ISBN })
         if (uniqueISBN) { return res.status(404).send({ status: false, message: `This ISBN: ${ISBN} is already Present. Please use Another ISBN.` }) }
-
-       
+        
+        
         let updateBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, body, { new: true })
 
       
@@ -129,10 +130,9 @@ const updateBookById = async (req, res) => {
         res.status(200).send({ status: true, message: 'Success', data: updateBook })
 
     } catch (error) {
-
+        
         res.status(500).send({ status: 'error', error: error.message })
     }
 }
 
-
-module.exports={getbooks , createBook,updateBookById}
+module.exports={getbooks , createBook,getbooksbyId,updateBookById}
