@@ -45,9 +45,10 @@ const getbooks= async function(req,res){
             }
             return res.status(200).send({status:true, message:"Book List", data:books})
         }else{
+            if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
             let books= await bookModel.find(filterbook).select({_id:1,title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1}).sort({title:1})
             if(!Object.keys(books).length){
-                return res.status(404).send({status:false,message:"No such book exist"})
+                return res.status(404).send({status:false,message:"No such book exist or Already Deleted"})
             }
             return res.status(200).send({status:true, message:"Book List",data:books})
         }
@@ -62,6 +63,10 @@ const getbooks= async function(req,res){
 const getbooksbyId= async function(req,res){
 try{
     let bookId=req.params.bookId
+    if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid Id"})
+
+    const checkBookId = await bookModel.findOne({ _id: bookId, isDeleted: false })
+     if (!checkBookId) { return res.status(404).send({ status: false, message: `This BookId: ${bookId} is not Exist! or Already been Deleted.` }) }
     
     const findId=await bookModel.findById({_id:bookId, isDeleted:false})
     if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
@@ -142,24 +147,24 @@ let deleteBook = async function (req, res) {
     try {
         const bookId = req.params.bookId
         
-        if (!validator.checkString((bookId) && isValidObjectId(bookId))) {
-            return res.status(400).send({ status: false, msg: "bookId is not valid" })
-        }
-        const book = await bookModel.findOne({ _id: bookId })
-        if (!book) {
-            res.status(404).send({ status: false, message: `id don't exist in book collection` })
-            return
-        }
+        // if (!validator.checkString((bookId) && isValidObjectId(bookId))) {
+        //     return res.status(400).send({ status: false, msg: "bookId is not valid" })
+        // }
+        // const book = await bookModel.findOne({ _id: bookId })
+        // if (!book) {
+        //     res.status(404).send({ status: false, message: `id don't exist in book collection` })
+        //     return
+        // }
       
        let deletedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false, deletedAt: null },
             { isDeleted: true, deletedAt: new Date() }, { new: true })
         if (!deletedBook) {
-            res.status(404).send({ status: false, msg: "either the book is already deleted or you are not valid user to access this book" })
-            return
+            return  res.status(404).send({ status: false, msg: "either the book is already deleted" })
+            
         }
-        res.status(200).send({ status: true, msg: "Book has been deleted" ,data:deleteBook})
+        return res.status(200).send({ status: true, msg: "Book has been deleted" ,data:deleteBook})
     } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, msg: error.message })
     }
 };
 
