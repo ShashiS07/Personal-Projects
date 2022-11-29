@@ -73,15 +73,18 @@ const getbooks= async function(req,res){
             }
             return res.status(200).send({status:true, message:"Book List", data:books})
         }else{
-            if(data.userId){
-             if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
-            }
-            let books= await bookModel.find(filterbook).select({_id:1,title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1}).sort({title:1})
-            if(!Object.keys(books).length){
-                return res.status(404).send({status:false,message:"No such book exist or Already Deleted"})
-            }
-            return res.status(200).send({status:true, message:"Book List",data:books})
+            if(data.userId||data.category||data.subcategory){
+                if(data.userId){
+                if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
+                }
+                let books= await bookModel.find(filterbook).select({_id:1,title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1}).sort({title:1})
+                if(!Object.keys(books).length){
+                    return res.status(404).send({status:false,message:"No such book exist or Already Deleted"})
+                }
+                return res.status(200).send({status:true, message:"Book List",data:books})
         }
+        return res.status(400).send({status:false,message:"Please Provide valid Query"})
+    }
     }catch(error){
         return res.status(500).send({status:false, message:error.message})
     }
