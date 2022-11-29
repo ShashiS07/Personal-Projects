@@ -45,7 +45,9 @@ const getbooks= async function(req,res){
             }
             return res.status(200).send({status:true, message:"Book List", data:books})
         }else{
-            if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
+            if(data.userId){
+             if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
+            }
             let books= await bookModel.find(filterbook).select({_id:1,title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1}).sort({title:1})
             if(!Object.keys(books).length){
                 return res.status(404).send({status:false,message:"No such book exist or Already Deleted"})
@@ -63,13 +65,10 @@ const getbooks= async function(req,res){
 const getbooksbyId= async function(req,res){
 try{
     let bookId=req.params.bookId
-    if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid Id"})
-
-    const checkBookId = await bookModel.findOne({ _id: bookId, isDeleted: false })
-     if (!checkBookId) { return res.status(404).send({ status: false, message: `This BookId: ${bookId} is not Exist! or Already been Deleted.` }) }
+    if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
     
-    const findId=await bookModel.findById({_id:bookId, isDeleted:false})
-    if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
+    const findId=await bookModel.findById({_id:bookId})
+    if(findId.isDeleted) return res.status(404).send({status:false,message:"No book exist with this Id or Already deleted"})
   
     const review= await reviewModel.find(findId)
     
