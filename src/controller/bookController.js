@@ -99,7 +99,8 @@ try{
     if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
     
     const findId=await bookModel.findById({_id:bookId})
-    if(findId.isDeleted) return res.status(404).send({status:false,message:"No book exist with this Id or Already deleted"})
+    if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
+    if(findId.isDeleted) return res.status(404).send({status:false,message:"Already deleted"})
   
     const review= await reviewModel.find(findId)
     
