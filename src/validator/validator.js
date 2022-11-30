@@ -18,7 +18,6 @@ const validatePincode = (value) => { return (/^[1-9][0-9]{5}$/).test(value) }
 const validateISBN = (value) => { return (/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g).test(value) }
 const validateDate = (value) => { return (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/).test(value) }
 const validateTName = (value) => { return (/^([a-zA-Z_]+\s)*[a-zA-Z_]{2,50}$/).test(value)}
-const validateRating =(value)=>{return (/^[1-5]$/).test(value)}
 
 
-module.exports = { checkInputsPresent, checkString,validateRating, validateTName,validatePincode, validateName,  validateEmail, validatePassword, validateTitle, validateMobileNo, validateISBN, validateDate }
+module.exports = { checkInputsPresent, checkString, validateTName,validatePincode, validateName,  validateEmail, validatePassword, validateTitle, validateMobileNo, validateISBN, validateDate }
