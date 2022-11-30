@@ -112,6 +112,7 @@ try{
         userId:findId.userId,
         category:findId.category,
         subcategory:findId.subcategory,
+        reviews:findId.reviews,
         isDeleted:findId.isDeleted,
         releasedAt:findId.releasedAt,
         createdAt:findId.createdAt,
