@@ -7,14 +7,7 @@ const checkString = function (value) {
     if (typeof value == "string" && value.trim().length == 0) { return false }
     return true
 }
-const validateRating = function (rating) {
-    var re = /^[1-5](\[1-5][1-5]?)?$/;
-    if (typeof (rating) == 'string') {
-        return re.test(rating.trim())
-    } else {
-        return re.test(rating)
-    }
-};
+
 
 const validateName = (value) => { return (/^(?=.{1,50}$)[a-z]+(?:['_.\s][a-z]+)*$/i.test(value)); }
 const validateEmail = (value) => { return (/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(value)); }
@@ -25,6 +18,7 @@ const validatePincode = (value) => { return (/^[1-9][0-9]{5}$/).test(value) }
 const validateISBN = (value) => { return (/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/g).test(value) }
 const validateDate = (value) => { return (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/).test(value) }
 const validateTName = (value) => { return (/^([a-zA-Z_]+\s)*[a-zA-Z_]{2,50}$/).test(value)}
+const validateRating =(value)=>{return (/^[1-5]$/).test(value)}
 
 
-module.exports = { checkInputsPresent, checkString, validateTName,validatePincode, validateName,  validateEmail, validatePassword, validateTitle, validateMobileNo, validateISBN, validateDate,validateRating }
+module.exports = { checkInputsPresent, checkString,validateRating, validateTName,validatePincode, validateName,  validateEmail, validatePassword, validateTitle, validateMobileNo, validateISBN, validateDate }
