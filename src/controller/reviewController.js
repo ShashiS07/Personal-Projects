@@ -108,19 +108,8 @@ const updateReview = async function (req, res) {
         if (!rating) {
             return res.status(400).send({ status: false, msg: "rating is required" })
         }
-        if (Obj1.hasOwnProperty('rating')) {
-            if ((typeof rating === "number") || (rating === 0) || !(rating >= 1 && rating <= 5)) {
-                return res.status(400).send({ status: false, message: "Please enter valid rating (number) in between range (1 to 5)." });
-            }
-        }
-        // if (rating){
-    
-        // if(!(typeof rating ==="number")){
-        //   return res.status(400).send({status:false, msg:"rating should be a number"})
-        // }
-          if (!validateRating(rating))
-          return res.status(400).send({status:false, msg:"rating should be between 1 to 5"})
-    
+       
+        if((rating<1 || rating>5) || typeof(rating)!=='number') return res.status(400).send({status:false,message:"Please enter valid rating (number) in between range (1 to 5)."})
     
         
         Obj1.rating=rating
