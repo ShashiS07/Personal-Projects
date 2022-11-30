@@ -102,10 +102,9 @@ try{
     
     const findId=await bookModel.findById({_id:bookId})
     if(!findId) return res.status(404).send({status:false,message:"No book exist with this Id"})
-    if(findId.isDeleted) return res.status(404).send({status:false,message:"Already deleted"})
+    if(findId.isDeleted) return res.status(404).send({status:false,message:"The book you are trying to find is deleted"})
   
-    const review= await reviewModel.find(findId)
-    
+    const review= await reviewModel.find({bookId:findId._id, isDeleted:false}).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
     const details={
         _id:findId._id,
         title:findId.title,

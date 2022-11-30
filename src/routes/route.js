@@ -23,4 +23,8 @@ router.delete("/deleted/:bookId",middleware.Authentication,middleware.Authorisat
 
 router.post("/books/:bookId/review", createReview.createReview)
 
+router.put("/books/:bookId/review/:reviewId", createReview.updateReview)
+
+router.delete("/books/:bookId/review/:reviewId", createReview.deletereview)
+
 module.exports= router;
