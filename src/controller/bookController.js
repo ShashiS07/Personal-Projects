@@ -180,6 +180,7 @@ let deleteBook = async function (req, res) {
     try {
         const bookId = req.params.bookId
       
+        if(!isValidObjectId(bookId)) return res.status(400).send({status:false,message:"Please provide valid bookId"})
        let deletedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false, deletedAt: null },
             { isDeleted: true, deletedAt: new Date() }, { new: true })
         if (!deletedBook) {
