@@ -70,7 +70,7 @@ const getbooks= async function(req,res){
         let filterbook={isDeleted:false,...data}
         if(!Object.keys(data).length){
             let books = await bookModel.find({isDeleted:false}).sort({title:1})
-            if(!Object.keys(books).length){
+            if(books.length==0){
                 return res.status(404).send({status:false, message:"No book exist"})
             }
             return res.status(200).send({status:true, message:"Book List", data:books})
@@ -80,7 +80,7 @@ const getbooks= async function(req,res){
                 if(!isValidObjectId(data.userId)) return res.status(400).send({status:false,message:"Please provide valid userId"})
                 }
                 let books= await bookModel.find(filterbook).select({_id:1,title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1}).sort({title:1})
-                if(!Object.keys(books).length){
+                if(books.length==0){
                     return res.status(404).send({status:false,message:"No such book exist or Already Deleted"})
                 }
                 return res.status(200).send({status:true, message:"Book List",data:books})
