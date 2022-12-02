@@ -184,12 +184,12 @@ let deleteBook = async function (req, res) {
        let deletedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false, deletedAt: null },
             { isDeleted: true, deletedAt: new Date() }, { new: true })
         if (!deletedBook) {
-            return  res.status(404).send({ status: false, msg: "either the book is already deleted" })
+            return  res.status(404).send({ status: false, message: "either the book is already deleted" })
             
         }
-        return res.status(200).send({ status: true, msg: "Book has been deleted" ,data:deleteBook})
+        return res.status(200).send({ status: true, message: "Book has been deleted" ,data:deleteBook})
     } catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 };
 
