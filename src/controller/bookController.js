@@ -23,8 +23,7 @@ const createBook = async function(req, res){
         if (!checkUserId) { return res.status(400).send({ status: false, message: `${userId} is not Exist.` }) }
 
         if (!checkString(title)) return res.status(400).send({ status: false, message: "Please Provide Title of Book." })
-        if (!validateTName(title)) return res.status(400).send({ status: false, message: "Invalid Title." });
-
+        if (!validateTName(title)) return res.status(400).send({ status: false, message: "Invalid Title." });  
         if (!checkString(excerpt)) return res.status(400).send({ status: false, message: "Please Provide Book Excerpt." })
         if (!validateName(excerpt)) return res.status(400).send({ status: false, message: "Invalid Excerpt." });
 

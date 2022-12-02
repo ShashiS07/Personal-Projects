@@ -39,12 +39,9 @@ const createUser= async function(req,res){
             if(!Object.keys(address).length) return res.status(400).send({status:false,message:"Please provide Street/city/pincode"})
             if(!address.street || address.street=="") return res.status(400).send({status:false,message:"Please provide Street"})
             if(!address.city || address.city=="") return res.status(400).send({status:false,message:"Please provide city"})
-            if(!address.pincode || address.pincode=="") return res.status(400).send({status:false,message:"Please provide pincode"})
+            if(!address.pincode || !validatePincode(address.pincode)) return res.status(400).send({status:false,message:"Please provide valid pincode"})
         }
         
-
-        
-       
     let obj = await userModel.create(data)
     res.status(201).send({status:true,data:obj})
     }
@@ -70,7 +67,7 @@ const login = async function(req,res){
     let data2 = await userModel.findOne({email:email,password:password})
     if (!data2) { return res.status(401).send({ status: false, message: "Invalid Login Credentials! You need to register first." }) }
 
-    let token = Jwt.sign({ userId: data2['_id']}, "SubodhPal@123", { expiresIn:"60sec" })
+    let token = Jwt.sign({ userId: data2['_id']}, "SubodhPal@123", { expiresIn:"1d" })
 
     res.status(200).send({ status: true, message: "Token Created Sucessfully", data: token })
     }
