@@ -27,8 +27,6 @@ router.put("/books/:bookId/review/:reviewId", createReview.updateReview)
 
 router.delete("/books/:bookId/review/:reviewId", createReview.deletereview)
 
-
-
 aws.config.update({
     accessKeyId: "AKIAY3L35MCRZNIRGT6N",
     secretAccessKey: "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",
@@ -46,8 +44,6 @@ let uploadFile= async ( file) =>{
         Key: "abc/" + file.originalname, 
         Body: file.buffer
     }
-
-
     s3.upload( uploadParams, function (err, data ){
         if(err) {
             return reject({"error": err})
@@ -56,9 +52,6 @@ let uploadFile= async ( file) =>{
         // console.log("file uploaded succesfully")
         return resolve(data.Location)
     })
-
-    
-
    })
 }
 
@@ -81,7 +74,5 @@ router.post("/write-file-aws", async function(req, res){
     }
     
 })
-
-
 
 module.exports= router;
