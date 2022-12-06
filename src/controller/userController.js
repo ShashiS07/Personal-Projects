@@ -3,6 +3,8 @@ const Jwt = require('jsonwebtoken')
 const { checkInputsPresent, checkString, validatePincode, validateName, validateEmail, validatePassword, validateTitle, validateMobileNo } = require('../validator/validator')
 
 
+
+
 const createUser= async function(req,res){
     try{
 
@@ -69,7 +71,7 @@ const login = async function(req,res){
 
     let token = Jwt.sign({ userId: data2['_id']}, "SubodhPal@123", { expiresIn:"1d" })
 
-    res.status(200).send({ status: true, message: "Token Created Sucessfully", data: token })
+    res.status(200).send({ status: true, message: "Token Created Sucessfully", data: {token:token }})
     }
     catch(err)
     {
@@ -80,3 +82,8 @@ const login = async function(req,res){
 
 
 module.exports={createUser,login,} 
+
+
+
+
+

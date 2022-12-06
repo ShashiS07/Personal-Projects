@@ -2,8 +2,11 @@
 const express= require('express')
 const { default: mongoose } = require('mongoose')
 const route= require('./routes/route')
-
+const multer=require('multer')
 const app = express()
+
+const { AppConfig } = require('aws-sdk');
+app.use(multer().any())
 
 app.use(express.json())
 mongoose
@@ -24,6 +27,8 @@ app.use(function (req, res) {
   err.status = 404
   return res.status(404).send({ status: "404", msg: "Path not Found." })
 })
+
+
 
 app.listen(process.env.PORT ||3000,function(){
     console.log('Express App Running on Port: ' + (process.env.PORT || 3000))
