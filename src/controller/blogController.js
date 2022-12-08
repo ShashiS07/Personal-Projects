@@ -46,7 +46,7 @@ const createblog=async function(req,res){
     if(data.isDeleted){
         blog.deletedAt=moment().format()
     }
-    return res.status(201).send({status:true,blog:blog})  
+    return res.status(201).send({status:true,data:blog})  
 }
 catch(error){
     res.status(500).send({status:false,error:error.message})

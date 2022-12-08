@@ -34,10 +34,13 @@ const createAuthor =async function(req,res){
         }else{
             if (!(/^\w+([\.]?\w+)@\w+([\.]?\w+)(\.\w{2,3})+$/).test(email)) {
                 return res.status(400).send({status:false, error:"please provide valid email"})
+            }else{
+                let uniqueEmail= await authorModel.findOne({email:email})
+                if(uniqueEmail) return res.status(400).send({status:false,message:"This Email is already taken"})
             }
         }
         const create =await authorModel.create({fname,lname,title,email,password});
-        res.status(201).send({status:true, author:create})
+       return res.status(201).send({status:true, data:create})
     }
     catch (err) {
         res.status(500).send({ status:false, error:err.message })

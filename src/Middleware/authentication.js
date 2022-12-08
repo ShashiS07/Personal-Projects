@@ -7,13 +7,14 @@ const authentication=async function(req,res,next){
     try{
         let token=req.headers["x-api-key"]
         if(!token) return res.status(404).send({status:false,error:"Token must be present"})
-        try{
-        var decodedToken=jwt.verify(token,"grp-18-first-project")
-        }catch(err){
-         return res.status(401).send({status:false,error:"Token is invalid"})
-        }
-        req["decodedToken"]=decodedToken
-        next()
+        jwt.verify(token,"grp-18-first-project",function(error,decodedToken){
+            if(error){
+                res.status(400).send({status:false,message:"Invalid Token"})
+            }else{
+                req["decodedToken"]=decodedToken
+                next()
+            }
+        })  
     }
     catch(error){
         return res.status(500).send({status:false, error:error.message})
