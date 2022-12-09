@@ -98,7 +98,7 @@ const updateBlogs = async function (req ,res){
     try{
         const blogId = req.params.blogId;
         if(!isValid(blogId)){
-            return res.status(400).send({status:false, error: "Bad Request"})
+            return res.status(400).send({status:false, error: "Please Provide valid Id"})
         }
         const id = await blogModel.findById(blogId);
         if (id.isDeleted==true){
