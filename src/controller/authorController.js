@@ -63,7 +63,7 @@ const login = async function (req ,res){
         if (!author) return res.status(400).send({status: false, error: "username or the password is not correct"});
 
           let token = jwt.sign({authorId: author._id.toString(),organisation: "LithiumGroup-18",},"grp-18-first-project");
-          res.status(200).send({ status: true, data: token});
+          res.status(200).send({ status: true, data: {token:token}});
 }
 catch(error){
     return res.status(500).send({status:false, error:error.message})
