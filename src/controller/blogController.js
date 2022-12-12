@@ -88,7 +88,7 @@ let getBlogs = async function (req,res){
             return res.status(200).send({statue:true , data : getDetails})
             } 
         }
-        return res.status(400).send({status:false,message:"Please Provide valid query"})
+        return res.status(400).send({status:false,message:"Please Provide valid query (tags/authodId/category/subcategory)"})
     }
 }catch(error) {
         res.status(500).send({status:false, error:error.message})
