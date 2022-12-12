@@ -57,38 +57,40 @@ catch(error){
 
 let getBlogs = async function (req,res){
     try{
-        let {authorId,category,tags,subcategory} = req.query
-        if(authorId==undefined&&tags==undefined&&category==undefined&&subcategory==undefined){
-            let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true}).populate('authorId')
-            if (blogDetails.length==0){
+        let data=req.query
+        if(!Object.keys(data).length){
+            if(!data.authorId || !data.category || data.tags || data.subcategory){
+                let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true}).populate('authorId')
+            if (!blogDetails){
                return  res.status (404).send({status: false , error:"No blog exist" } )
                 }else {
                     return res.status(200).send({status :true ,data : blogDetails})
                 }
+            }
         }else{
-            let filterdata={isDeleted:false}
-            let {category,subcategory,tags,isPublished,authorId}=req.query
-
-        if(authorId){
-            if(!isValid(authorId)){
-            return res.status(400).send({status:false, error:"Please provide valid id"})
-         }else
-            filterdata.authorId=authorId
-        }
-            if(category)  filterdata.category=category
-            if(subcategory) filterdata.subcategory=subcategory
-            if(tags) filterdata.tags=tags
-            if(isPublished) filterdata.isPublished=isPublished
+            if(data.authorId || data.category || data.tags || data.subcategory){
+                let filterdata={isDeleted:false}
+                if(data.authorId){
+                    if(!isValid(data.authorId)){
+                    return res.status(400).send({status:false, error:"Please provide valid id"})
+                 }else
+                    filterdata.authorId=data.authorId
+                }
+            if(data.category)  filterdata.category=data.category
+            if(data.subcategory) filterdata.subcategory=data.subcategory
+            if(data.tags) filterdata.tags=data.tags
+            if(data.isPublished) filterdata.isPublished=data.isPublished
             let getDetails = await blogModel.find(filterdata).populate('authorId')
             
             if (getDetails.length==0){
-            return res.status(400).send({status:false, error:"No Blog Found with this filter" })
+            return res.status(400).send({status:false, error:"No blog found with this query"})
             }else{
             return res.status(200).send({statue:true , data : getDetails})
-            }   
+            } 
         }
+        return res.status(400).send({status:false,message:"Please Provide valid query"})
     }
-    catch(error) {
+}catch(error) {
         res.status(500).send({status:false, error:error.message})
     }
 }
