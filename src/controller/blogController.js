@@ -59,7 +59,7 @@ let getBlogs = async function (req,res){
     try{
         let data=req.query
         if(!Object.keys(data).length){
-            if(!data.authorId || !data.category || data.tags || data.subcategory){
+            if(!data.authorId || !data.category || !data.tags || !data.subcategory){
                 let blogDetails = await blogModel.find({isDeleted:false ,isPublished:true}).populate('authorId')
             if (!blogDetails){
                return  res.status (404).send({status: false , error:"No blog exist" } )
