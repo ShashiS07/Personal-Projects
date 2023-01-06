@@ -3,15 +3,24 @@ const express= require('express')
 const { default: mongoose } = require('mongoose')
 const route= require('./routes/route')
 const multer=require('multer')
+const cors = require('cors')
 const app = express()
 
 const { AppConfig } = require('aws-sdk');
 app.use(multer().any())
+app.use(cors());
+
+app.use (
+  function (req, res, next) {
+      res.setHeader("Access-Control-Allow-Origin",'*')
+      next();
+}
+);
 
 app.use(express.json())
 mongoose
   .connect(
-    "mongodb+srv://palsubodh:Palsubodh@cluster0.mhegah9.mongodb.net/group2Database",
+    "mongodb+srv://Shashi_Shekhar_Singh:Shashi0708@myproject.mb3u3za.mongodb.net/BookManagement?authSource=admin&replicaSet=atlas-lhj98j-shard-0&readPreference=primary&ssl=true",
     {
       useNewUrlParser: true,
     }
@@ -30,8 +39,8 @@ app.use(function (req, res) {
 
 
 
-app.listen(process.env.PORT ||3000,function(){
-    console.log('Express App Running on Port: ' + (process.env.PORT || 3000))
+app.listen(process.env.PORT ||3001,function(){
+    console.log('Express App Running on Port: ' + (process.env.PORT || 3001))
 })
 
 
